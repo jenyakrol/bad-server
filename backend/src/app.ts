@@ -30,7 +30,6 @@ app.use(errorHandler)
 // eslint-disable-next-line no-console
 
 const bootstrap = async () => {
-    console.log(`PORT: ${ORIGIN_ALLOW}`);
     try {
         await mongoose.connect(DB_ADDRESS)
         await app.listen(PORT, () => console.log('ok'))

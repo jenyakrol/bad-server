@@ -81,7 +81,7 @@ const updateProduct = async (
 ) => {
     try {
         const { productId } = req.params
-        const { image } = req.body
+        const { title, image, category, description, price } = req.body
 
         // Переносим картинку из временной папки
         if (image) {
@@ -96,9 +96,11 @@ const updateProduct = async (
             productId,
             {
                 $set: {
-                    ...req.body,
-                    price: req.body.price ? req.body.price : null,
-                    image: req.body.image ? req.body.image : undefined,
+                    title,
+                    image,
+                    category,
+                    description,
+                    price: price || null,
                 },
             },
             { runValidators: true, new: true }

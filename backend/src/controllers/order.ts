@@ -16,6 +16,8 @@ export const getOrders = async (
     next: NextFunction
 ) => {
     try {
+        console.log(req.query)
+
         const {
             page = 1,
             limit = 10,
@@ -355,6 +357,7 @@ export const updateOrder = async (
 ) => {
     try {
         const { status } = req.body
+
         const updatedOrder = await Order.findOneAndUpdate(
             { orderNumber: req.params.orderNumber },
             { status },

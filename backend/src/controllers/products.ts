@@ -72,7 +72,6 @@ const createProduct = async (
     }
 }
 
-// TODO: Добавить guard admin
 // PUT /product
 const updateProduct = async (
     req: Request,
@@ -122,7 +121,6 @@ const updateProduct = async (
     }
 }
 
-// TODO: Добавить guard admin
 // DELETE /product
 const deleteProduct = async (
     req: Request,

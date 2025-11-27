@@ -51,4 +51,10 @@ const fileFilter = (
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter })
+const limits: multer.Options["limits"] = {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+    fields: 0,
+}
+
+export default multer({ storage, fileFilter, limits })

@@ -15,6 +15,8 @@ const app = express()
 
 app.use(cookieParser())
 
+app.set('trust proxy', 1)
+
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 

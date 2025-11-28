@@ -5,6 +5,7 @@ import 'dotenv/config'
 import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
 import path from 'path'
+import rateLimit from 'express-rate-limit'
 import { DB_ADDRESS, ORIGIN_ALLOW, PORT } from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
@@ -22,7 +23,15 @@ app.use(serveStatic(path.join(__dirname, 'public')))
 app.use(urlencoded({ extended: true }))
 app.use(json())
 
-// app.options('*', cors())
+const limiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 10000,
+    standardHeaders: true,
+    legacyHeaders: false,
+})
+
+app.use(limiter)
+
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)

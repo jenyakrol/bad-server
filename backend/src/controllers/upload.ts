@@ -7,17 +7,6 @@ export const uploadFile = async (
     res: Response,
     next: NextFunction
 ) => {
-    console.log('=== UPLOAD DEBUG ===');
-    console.log('Headers:', {
-        'content-type': req.headers['content-type'],
-        'content-length': req.headers['content-length'],
-        'x-original-content-type': req.headers['x-original-content-type']
-    });
-    console.log('Body keys:', Object.keys(req.body));
-    console.log('File:', req.file);
-    console.log('Files:', req.files);
-    console.log('====================');
-
     if (!req.file) {
         return next(new BadRequestError('Файл не загружен'))
     }

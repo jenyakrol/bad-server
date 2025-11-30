@@ -1,10 +1,12 @@
 import { existsSync, rename } from 'fs'
-import { basename, join } from 'path'
+import { join } from 'path'
+import escapeFileName from './escapeFileName'
 
 function movingFile(imagePath: string, from: string, to: string) {
-    const fileName = basename(imagePath)
+    const fileName = escapeFileName(imagePath)
     const imagePathTemp = join(from, fileName)
     const imagePathPermanent = join(to, fileName)
+
     if (!existsSync(imagePathTemp)) {
         throw new Error('Ошибка при сохранении файла')
     }

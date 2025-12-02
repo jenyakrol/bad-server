@@ -8,7 +8,6 @@ import path from 'path'
 import rateLimit from 'express-rate-limit'
 import { DB_ADDRESS, ORIGIN_ALLOW, PORT } from './config'
 import errorHandler from './middlewares/error-handler'
-import serveStatic from './middlewares/serverStatic'
 import routes from './routes'
 
 const app = express()
@@ -19,8 +18,6 @@ app.set('trust proxy', 1)
 
 app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(serveStatic(path.join(__dirname, 'public')))
 
 app.use(urlencoded({ extended: true }))
 app.use(json())

@@ -93,6 +93,8 @@ const deleteRefreshTokenInUser = async (
     const { cookies } = req
     const rfTkn = cookies[REFRESH_TOKEN.cookie.name]
 
+    console.log(rfTkn);
+
     if (!rfTkn) {
         throw new UnauthorizedError('Не валидный токен')
     }

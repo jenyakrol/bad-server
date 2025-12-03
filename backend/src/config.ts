@@ -1,5 +1,6 @@
 import { CookieOptions } from 'express'
 import ms from 'ms'
+import {join} from 'path'
 import { ensureDir } from './utils/ensureDir'
 
 export const { PORT = '3000' } = process.env
@@ -25,5 +26,5 @@ export const REFRESH_TOKEN = {
     },
 }
 
-export const UPLOAD_PATH_TEMP = ensureDir(`src/public/${process.env.UPLOAD_PATH_TEMP || 'temp'}`)
-export const UPLOAD_PATH = ensureDir(`src/public${process.env.UPLOAD_PATH || 'images'}`)
+export const UPLOAD_PATH_TEMP = ensureDir(join(__dirname, `./public/${process.env.UPLOAD_PATH_TEMP || 'temp'}`))
+export const UPLOAD_PATH = ensureDir(join(__dirname, `./public/${process.env.UPLOAD_PATH || 'images'}`))

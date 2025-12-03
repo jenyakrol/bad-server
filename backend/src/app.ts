@@ -7,7 +7,7 @@ import mongoose from 'mongoose'
 import path from 'path'
 import rateLimit from 'express-rate-limit'
 import { ensureDir } from './utils/ensureDir'
-import { DB_ADDRESS, ORIGIN_ALLOW, PORT, UPLOAD_PATH } from './config'
+import { DB_ADDRESS, ORIGIN_ALLOW, PORT, UPLOAD_PATH, UPLOAD_PATH_TEMP } from './config'
 import errorHandler from './middlewares/error-handler'
 import routes from './routes'
 
@@ -42,14 +42,7 @@ const bootstrap = async () => {
     try {
         await mongoose.connect(DB_ADDRESS)
 
-        const workspace = process.env.GITHUB_WORKSPACE || path.resolve(process.cwd(), '..');
-        const tempDir = path.join(
-            workspace,
-            'backend/src/public',
-            process.env.UPLOAD_PATH_TEMP || 'temp',
-        );
-
-        ensureDir(tempDir)
+        ensureDir(UPLOAD_PATH_TEMP)
         ensureDir(UPLOAD_PATH)
 
         await app.listen(PORT, () => console.log('oк'))

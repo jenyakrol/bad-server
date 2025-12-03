@@ -28,14 +28,14 @@ export const getOrders = async (
             search,
         } = req.query
 
-        const limit = Math.min(Number(req.query.limit || 5), 50)
+        const limit = Math.min(Number(req.query.limit || 5), 10)
         const page = Number(req.query.page || 1);
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
         if (status) {
             if (typeof status === 'object') {
-                Object.assign(filters, status)
+                throw new Error('Недопустимый статус')
             }
             if (typeof status === 'string') {
                 filters.status = status

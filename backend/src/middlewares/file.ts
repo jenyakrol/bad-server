@@ -1,4 +1,4 @@
-import { Request, Express } from 'express'
+import { Request, Express, Response, NextFunction } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import path from 'path'
 import crypto from 'crypto'
@@ -50,10 +50,6 @@ const fileFilter = (
         return cb(null, false)
     }
 
-    if (file.size && file.size < 2 * 1024) {
-        return cb(new Error('File size must be at least 2KB'))
-    }
-
     return cb(null, true)
 }
 
@@ -61,6 +57,23 @@ const limits: multer.Options["limits"] = {
     fileSize: 5 * 1024 * 1024,
     files: 5,
     fields: 0,
+}
+
+export const checkMinSize = (req: Request, _: Response, next: NextFunction) => {
+  try {
+    if (!req.file) {
+    return next()
+  }
+  const minSize = 2 * 1024
+  if (req.file.size < minSize) {
+    throw new Error("Файл меньше 2 килобайт")
+  }
+  
+  next()
+  } catch(err) {
+    next(err)
+  }
+  
 }
 
 export default multer({ storage, fileFilter, limits })

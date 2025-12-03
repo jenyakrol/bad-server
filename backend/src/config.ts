@@ -1,7 +1,6 @@
 import { CookieOptions } from 'express'
 import ms from 'ms'
 import {join} from 'path'
-import { ensureDir } from './utils/ensureDir'
 
 export const { PORT = '3000' } = process.env
 export const { DB_ADDRESS = 'mongodb://127.0.0.1:27017/weblarek' } = process.env
@@ -26,5 +25,5 @@ export const REFRESH_TOKEN = {
     },
 }
 
-export const UPLOAD_PATH_TEMP = ensureDir(join(__dirname, `./public/${process.env.UPLOAD_PATH_TEMP || 'temp'}`))
-export const UPLOAD_PATH = ensureDir(join(__dirname, `./public/${process.env.UPLOAD_PATH || 'images'}`))
+export const UPLOAD_PATH_TEMP = join(__dirname, `./public/${process.env.UPLOAD_PATH_TEMP || 'temp'}`)
+export const UPLOAD_PATH = join(__dirname, `./public/${process.env.UPLOAD_PATH || 'images'}`)

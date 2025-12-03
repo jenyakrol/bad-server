@@ -7,7 +7,7 @@ import mongoose from 'mongoose'
 import path from 'path'
 import rateLimit from 'express-rate-limit'
 import { ensureDir } from './utils/ensureDir'
-import { DB_ADDRESS, ORIGIN_ALLOW, PORT, UPLOAD_PATH, UPLOAD_PATH_TEMP } from './config'
+import { DB_ADDRESS, ORIGIN_ALLOW, PORT, UPLOAD_PATH } from './config'
 import errorHandler from './middlewares/error-handler'
 import routes from './routes'
 
@@ -41,8 +41,8 @@ app.use(errorHandler)
 const bootstrap = async () => {
     try {
         await mongoose.connect(DB_ADDRESS)
-        
-        ensureDir(UPLOAD_PATH_TEMP)
+
+        ensureDir('/home/runner/work/bad-server/bad-server/backend/src/public/temp')
         ensureDir(UPLOAD_PATH)
 
         await app.listen(PORT, () => console.log('ok'))

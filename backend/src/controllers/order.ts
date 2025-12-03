@@ -17,11 +17,7 @@ export const getOrders = async (
     next: NextFunction
 ) => {
     try {
-        console.log(req.query)
-
         const {
-            page = 1,
-            limit = 10,
             sortField = 'createdAt',
             sortOrder = 'desc',
             status,
@@ -31,6 +27,9 @@ export const getOrders = async (
             orderDateTo,
             search,
         } = req.query
+
+        const limit = Math.min(Number(req.query.limit || 5), 50)
+        const page = Number(req.query.page || 1);
 
         const filters: FilterQuery<Partial<IOrder>> = {}
 
@@ -120,8 +119,8 @@ export const getOrders = async (
 
         aggregatePipeline.push(
             { $sort: sort },
-            { $skip: (Number(page) - 1) * Number(limit) },
-            { $limit: Number(limit) },
+            { $skip: (page - 1) * limit },
+            { $limit: limit },
             {
                 $group: {
                     _id: '$_id',

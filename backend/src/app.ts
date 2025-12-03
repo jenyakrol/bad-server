@@ -52,7 +52,7 @@ const bootstrap = async () => {
         ensureDir(tempDir)
         ensureDir(UPLOAD_PATH)
 
-        await app.listen(PORT, () => console.log('ok'))
+        await app.listen(PORT, () => console.log('oк'))
     } catch (error) {
         console.error(error)
     }

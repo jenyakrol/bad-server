@@ -24,7 +24,7 @@ app.use(json())
 
 const limiter = rateLimit({
     windowMs: 60 * 1000,
-    limit: 10000,
+    limit: 40,
     standardHeaders: true,
     legacyHeaders: false,
 })

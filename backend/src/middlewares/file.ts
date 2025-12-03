@@ -1,7 +1,8 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import path, { join } from 'path'
+import path from 'path'
 import crypto from 'crypto'
+import { UPLOAD_PATH_TEMP } from '../config'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -14,12 +15,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            join(
-                __dirname,
-                process.env.UPLOAD_PATH_TEMP
-                    ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public'
-            )
+            UPLOAD_PATH_TEMP
         )
     },
 

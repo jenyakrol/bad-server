@@ -42,7 +42,14 @@ const bootstrap = async () => {
     try {
         await mongoose.connect(DB_ADDRESS)
 
-        ensureDir('/home/runner/work/bad-server/bad-server/backend/src/public/temp')
+        const workspace = process.env.GITHUB_WORKSPACE || path.resolve(process.cwd(), '..');
+        const tempDir = path.join(
+            workspace,
+            'backend/src/public',
+            process.env.UPLOAD_PATH_TEMP || 'temp',
+        );
+
+        ensureDir(tempDir)
         ensureDir(UPLOAD_PATH)
 
         await app.listen(PORT, () => console.log('ok'))

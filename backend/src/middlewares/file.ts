@@ -50,6 +50,10 @@ const fileFilter = (
         return cb(null, false)
     }
 
+    if (file.size && file.size < 2 * 1024) {
+        return cb(new Error('File size must be at least 2KB'))
+    }
+
     return cb(null, true)
 }
 

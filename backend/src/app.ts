@@ -16,7 +16,7 @@ app.use(cookieParser())
 
 app.set('trust proxy', 1)
 
-app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
+app.use(cors({ origin: ORIGIN_ALLOW || 'http://localhost:5173', credentials: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(urlencoded({ extended: true }))

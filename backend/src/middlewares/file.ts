@@ -1,6 +1,8 @@
-import { Request, Express } from 'express'
+import { Request, Express, Response, NextFunction } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { join } from 'path'
+import path from 'path'
+import crypto from 'crypto'
+import { UPLOAD_PATH_TEMP } from '../config'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -13,12 +15,7 @@ const storage = multer.diskStorage({
     ) => {
         cb(
             null,
-            join(
-                __dirname,
-                process.env.UPLOAD_PATH_TEMP
-                    ? `../public/${process.env.UPLOAD_PATH_TEMP}`
-                    : '../public'
-            )
+            UPLOAD_PATH_TEMP
         )
     },
 
@@ -27,7 +24,11 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, file.originalname)
+        const fileHash = crypto.randomBytes(16).toString('hex')
+        const fileExt = path.extname(file.originalname).toLowerCase();
+        const newFileName = `${fileHash}${fileExt}`
+
+        cb(null, newFileName)
     },
 })
 
@@ -37,6 +38,7 @@ const types = [
     'image/jpeg',
     'image/gif',
     'image/svg+xml',
+    'image/webp'
 ]
 
 const fileFilter = (
@@ -51,4 +53,27 @@ const fileFilter = (
     return cb(null, true)
 }
 
-export default multer({ storage, fileFilter })
+const limits: multer.Options["limits"] = {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+    fields: 0,
+}
+
+export const checkMinSize = (req: Request, _: Response, next: NextFunction) => {
+  try {
+    if (!req.file) {
+    return next()
+  }
+  const minSize = 2 * 1024
+  if (req.file.size < minSize) {
+    throw new Error("Файл меньше 2 килобайт")
+  }
+  
+  next()
+  } catch(err) {
+    next(err)
+  }
+  
+}
+
+export default multer({ storage, fileFilter, limits })

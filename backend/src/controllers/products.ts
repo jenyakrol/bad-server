@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
 import { Error as MongooseError } from 'mongoose'
-import { join } from 'path'
+import { UPLOAD_PATH, UPLOAD_PATH_TEMP } from '../config'
 import BadRequestError from '../errors/bad-request-error'
 import ConflictError from '../errors/conflict-error'
 import NotFoundError from '../errors/not-found-error'
@@ -11,21 +11,24 @@ import movingFile from '../utils/movingFile'
 // GET /product
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { page = 1, limit = 5 } = req.query
+
+        const limit = Math.min(Number(req.query.limit || 5), 50)
+        const page = Number(req.query.page || 1);
+
         const options = {
-            skip: (Number(page) - 1) * Number(limit),
-            limit: Number(limit),
+            skip: (page - 1) * limit,
+            limit
         }
         const products = await Product.find({}, null, options)
         const totalProducts = await Product.countDocuments({})
-        const totalPages = Math.ceil(totalProducts / Number(limit))
+        const totalPages = Math.ceil(totalProducts / limit)
         return res.send({
             items: products,
             pagination: {
                 totalProducts,
                 totalPages,
-                currentPage: Number(page),
-                pageSize: Number(limit),
+                currentPage: page,
+                pageSize: limit,
             },
         })
     } catch (err) {
@@ -46,8 +49,8 @@ const createProduct = async (
         if (image) {
             movingFile(
                 image.fileName,
-                join(__dirname, `../public/${process.env.UPLOAD_PATH_TEMP}`),
-                join(__dirname, `../public/${process.env.UPLOAD_PATH}`)
+                UPLOAD_PATH_TEMP,
+                UPLOAD_PATH
             )
         }
 
@@ -72,7 +75,6 @@ const createProduct = async (
     }
 }
 
-// TODO: Добавить guard admin
 // PUT /product
 const updateProduct = async (
     req: Request,
@@ -81,14 +83,14 @@ const updateProduct = async (
 ) => {
     try {
         const { productId } = req.params
-        const { image } = req.body
+        const { title, image, category, description, price } = req.body
 
         // Переносим картинку из временной папки
         if (image) {
             movingFile(
                 image.fileName,
-                join(__dirname, `../public/${process.env.UPLOAD_PATH_TEMP}`),
-                join(__dirname, `../public/${process.env.UPLOAD_PATH}`)
+                UPLOAD_PATH_TEMP,
+                UPLOAD_PATH
             )
         }
 
@@ -96,9 +98,11 @@ const updateProduct = async (
             productId,
             {
                 $set: {
-                    ...req.body,
-                    price: req.body.price ? req.body.price : null,
-                    image: req.body.image ? req.body.image : undefined,
+                    title,
+                    image,
+                    category,
+                    description,
+                    price: price || null,
                 },
             },
             { runValidators: true, new: true }
@@ -120,7 +124,6 @@ const updateProduct = async (
     }
 }
 
-// TODO: Добавить guard admin
 // DELETE /product
 const deleteProduct = async (
     req: Request,
